@@ -1,6 +1,11 @@
 # mock_uwb
 
-![image](https://user-images.githubusercontent.com/91099638/181670116-0d870530-a54e-4392-9e5b-d83de24648e2.png)
+This project simulate three-point fix method that is widely used to locate a tags' location. 
+In theory, by using measured distances between tags and anchor points, we will get only one possible result.
+
+![image](https://user-images.githubusercontent.com/91099638/181723429-83da4c1a-bd42-45ab-8751-2c0dccc3e411.png)
+
+However, in reality, measurment errors might result in three circles having no intersection or many intersections. Therefore, this project aims to solve this problem by finding a best estimated point even if the measured distances results in obscure result.
 
 ## Set Up
 
@@ -13,22 +18,26 @@ Randomly add some deviation on each of the three distances to simulate measureme
 
 In this project, two methods are used to estimate the position of the point.
 
-# 1.
-The first method is by using geometry methods to get an estimate point D according to the three circles we drawn previously.
+### 1.
+The first method is by using geometry methods to get an estimate point D according to the three circles we drew previously.
 ![test](https://user-images.githubusercontent.com/91099638/181671346-c8d4b1ac-db48-4630-8b4b-4919b429e9cf.jpg)
 
-Point D is the gray dot in the pictures.
 ![image](https://user-images.githubusercontent.com/91099638/181676434-59ddbe8e-4d69-4801-b35c-2fae2b41bd75.png)
 ![image](https://user-images.githubusercontent.com/91099638/181676450-fb5af378-3ad9-45ea-b98b-713963a3e5e9.png)
 
 
 
-# 2.
-The second method is to define a loss function
+### 2.
+The second method is to define a loss function and assume that x* and y* in $ \sum_{k=1}^n \sqrt{{(x-x_i)^2 + (y-y_i)^2}-r_i} $ is the best point of estimation.
+
+
 ![image](https://user-images.githubusercontent.com/91099638/181678668-8d3e6383-a654-463e-9f7d-368bde5fd532.png)
 
 
-and assume that x* .and y* in ![image](https://user-images.githubusercontent.com/91099638/181678303-ae47d3a3-c7f2-4e1b-a4d8-e58ecb6a0a1f.png) is the best point of estimation. (x*, y*) is the golden point in the pictures.
+
+![image](https://user-images.githubusercontent.com/91099638/181678303-ae47d3a3-c7f2-4e1b-a4d8-e58ecb6a0a1f.png) 
+
+ 
  
 
 
