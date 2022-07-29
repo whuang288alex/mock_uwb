@@ -34,10 +34,10 @@ The second method is to define a loss function $\sum\limits_{i=1}^{3} {(\sqrt{(x
 ## Result
 
 The average execution time for executing method 1 a hundred times is around 0.55 second, and the average distance between the calculated point and the actual point is around 23 pixel.
-https://github.com/whuang288alex/mock_uwb/blob/main/method1_test_result.txt
+https://github.com/whuang288alex/mock_uwb/blob/main/test_results/method1_test_result.txt
 
 The average execution time for executing method 2 a hundre times is around 4 seconds, and the average distance between the calculated point and the actual point is around 14 pixel.
-https://github.com/whuang288alex/mock_uwb/blob/main/method2_10_test_result.txt
+https://github.com/whuang288alex/mock_uwb/blob/main/test_results/method2_10_test_result.txt
 
 ## Discussion
 
@@ -46,7 +46,7 @@ As we can clearly see from the results, the points we get from using method 2 is
 ## Conclusion
 
 The improvement is substantial, as by using this hybrid approach, the average execution time for executing this method 100 times is very closed to that of method 1 (around 0.58 second), and the average distance between the calculated point and the actual point is very closed to that of method (around 14 pixels).
-
+https://github.com/whuang288alex/mock_uwb/blob/main/test_results/method3_10_test_result.txt
 
 
 
