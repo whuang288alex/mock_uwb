@@ -33,6 +33,8 @@ The second method is to define a loss function $\sum\limits_{i=1}^{3} {(\sqrt{(x
 
 ## Result
 
+(A clip that showcases the testing process)
+
 The average execution time for executing method 1 a hundred times is around 0.55 second, and the average distance between the calculated point and the actual point is around 23 pixel.
 https://github.com/whuang288alex/mock_uwb/blob/main/test_results/method1_test_result.txt
 
