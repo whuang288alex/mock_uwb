@@ -81,7 +81,7 @@ def draw_set_up():
     draw_line(anchor4, anchor1, black)
     
 # the main loop
-def main(err = 25, show_debug = False): 
+def main(err = 10, show_debug = False): 
     run = True
     new_point = True
     d1 = d2 = d3 = d4 = 0
