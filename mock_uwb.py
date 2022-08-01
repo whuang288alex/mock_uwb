@@ -3,6 +3,7 @@ import pygame
 import math
 import statistics
 import random
+import sys
 
 pygame.init()
 screen  = pygame.display.set_mode([1600, 900])
@@ -48,27 +49,6 @@ def draw_circle(dot, r, color = blue):
 
 def draw_line(dot1, dot2, color = blue):
     pygame.draw.line(screen, color, dot1, dot2, 2)
-    
-def extend_line(line):
-    p1, p2 = line
-    mul = 40
-    x = p2[0]-p1[0]
-    y = p2[1]-p1[1]
-    p2[0] += 40*x
-    p2[1] += 40*y
-    p1[0] -= 40*x
-    p1[1] -= 40*y
-    return p1, p2
-
-def lineLineIntersect(P0, P1, Q0, Q1):  
-    d = (P1[0]-P0[0]) * (Q1[1]-Q0[1]) + (P1[1]-P0[1]) * (Q0[0]-Q1[0]) 
-    if d == 0:
-        return None
-    t = ((Q0[0]-P0[0]) * (Q1[1]-Q0[1]) + (Q0[1]-P0[1]) * (Q0[0]-Q1[0])) / d
-    u = ((Q0[0]-P0[0]) * (P1[1]-P0[1]) + (Q0[1]-P0[1]) * (P0[0]-P1[0])) / d
-    if 0 <= t <= 1 and 0 <= u <= 1:
-        return round(P1[0] * t + P0[0] * (1-t)), round(P1[1] * t + P0[1] * (1-t))
-    return None
 
 def draw_set_up():
     draw_dot(anchor1)
@@ -81,7 +61,7 @@ def draw_set_up():
     draw_line(anchor4, anchor1, black)
     
 # the main loop
-def main(err = 10, show_debug = False): 
+def main(err = 30, show_debug = False, testing = False): 
     run = True
     new_point = True
     d1 = d2 = d3 = d4 = 0
@@ -92,15 +72,16 @@ def main(err = 10, show_debug = False):
     while run:
         timer.tick(200)
         screen.fill(white)
-       
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                break
-            elif event.type == pygame.KEYDOWN: # randomly generate a new tag position if the enter key is pressed
-                if event.key == pygame.K_RETURN:
-                    tag = [random.randint(200, 1160), random.randint(200, 770)]
-                    new_point = True
+        
+        if testing == False:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    break
+                elif event.type == pygame.KEYDOWN: # randomly generate a new tag position if the enter key is pressed
+                    if event.key == pygame.K_RETURN:
+                        tag = [random.randint(200, 1160), random.randint(200, 770)]
+                        new_point = True
                     
         # draw anchor spots and outer frame
         draw_set_up()
@@ -118,24 +99,18 @@ def main(err = 10, show_debug = False):
         r3 = get_distance( tag, anchor3) + d3
         r4 = get_distance( tag, anchor4) + d4
         
-        p1, p2 = extend_line(get_cirlce_collision(r1, r2, anchor1, anchor2))
-        p3, p4 = extend_line(get_cirlce_collision(r2, r3, anchor2, anchor3))
-        p5, p6 = extend_line(get_cirlce_collision(r1, r3, anchor1, anchor3))
-        p = lineLineIntersect(p1, p2, p3, p4)
-        if p != None:
-            draw_dot(p, dark_gray)
-            pass
-        else:
-            new_point = True
-            continue
+        # get the raw estimation
+        temp_x = int(get_cirlce_collision(r1, r2, anchor1, anchor2)[0][0])
+        temp_y = int(get_cirlce_collision(r2, r3, anchor2, anchor3)[0][1])
+        draw_dot((temp_x,temp_y), dark_gray)
         
     
         # draw the predicted tag position
         if new_point:
-            min_x = p[0] - 50
-            max_x = p[0] + 50
-            min_y = p[1] - 100
-            max_y = p[1] + 100
+            min_x = temp_x - 50
+            max_x = temp_x + 50
+            min_y = temp_y - 100
+            max_y = temp_y + 100
             if min_x < 200:
                 min_x = 200
             if max_x > 1160:
@@ -154,23 +129,29 @@ def main(err = 10, show_debug = False):
                         min_dis = temp
                         predicted_x = i
                         predicted_y = j
+
+        # draw the predicted point and calculate the distance between it and the actual point
+        draw_dot((predicted_x, predicted_y), gold)
         d = get_distance((predicted_x, predicted_y), tag)
         diff.append(d)
-        draw_dot((predicted_x, predicted_y), gold)  
-        
+         
+        # show the lines for debug purpose
         if show_debug:
-            draw_line(p1, p2, dark_gray)
-            draw_line(p3, p4, dark_gray)
-            draw_line(p5, p6, dark_gray)
+            draw_line((temp_x, 0), (temp_x, 900), dark_gray)
+            draw_line((0, temp_y), (1600,temp_y),  dark_gray)
             draw_circle(anchor1, r1, red)
             draw_circle(anchor2, r2, green)
             draw_circle(anchor3, r3, blue)
             
         pygame.display.flip()
-        new_point = False
-        # count += 1
-        # if count == 100:
-        #     break;
+        if testing == True:
+            tag = [random.randint(200, 1160), random.randint(200, 770)]
+            count += 1
+            new_point = True
+            if count == 100:
+                break
+        else:
+            new_point = False
     return statistics.mean(diff)
     
 if __name__ == "__main__":

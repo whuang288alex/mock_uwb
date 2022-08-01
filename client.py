@@ -8,7 +8,8 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 while True:
     outdata = input('please input message: ')
-    print('sendto ' + str(server_addr) + ': ' + outdata)
+    print(outdata)
+    print('sendto ' + str(server_addr) + ': ' + str(outdata))
     s.sendto(outdata.encode(), server_addr)
     
     indata, addr = s.recvfrom(1024)
