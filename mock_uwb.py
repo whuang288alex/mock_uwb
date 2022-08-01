@@ -64,7 +64,7 @@ def draw_set_up():
 def main(err = 30, show_debug = False, testing = False): 
     run = True
     new_point = True
-    d1 = d2 = d3 = d4 = 0
+    d1 = d2 = d3 = d4 = r1 = r2 = r3 = r4 = 0
     count = 0
     diff = []
     tag = [random.randint(200, 1160), random.randint(200, 770)]
@@ -82,46 +82,28 @@ def main(err = 30, show_debug = False, testing = False):
                     if event.key == pygame.K_RETURN:
                         tag = [random.randint(200, 1160), random.randint(200, 770)]
                         new_point = True
-                    
-        # draw anchor spots and outer frame
-        draw_set_up()
-        draw_dot(tag)
-    
-        # calculate the distance and apply some deviation
+        else:
+            pygame.event.get()
+
+        # calculate the predicted points
         if new_point:
-            d1 = random.randint(-err, err)
-            d2 = random.randint(-err, err)
-            d3 = random.randint(-err, err)
-            d4 = random.randint(-err, err)
-            
-        r1 = get_distance( tag, anchor1) + d1
-        r2 = get_distance( tag, anchor2) + d2
-        r3 = get_distance( tag, anchor3) + d3
-        r4 = get_distance( tag, anchor4) + d4
-        
-        # get the raw estimation
-        temp_x = int(get_cirlce_collision(r1, r2, anchor1, anchor2)[0][0])
-        temp_y = int(get_cirlce_collision(r2, r3, anchor2, anchor3)[0][1])
-        draw_dot((temp_x,temp_y), dark_gray)
-        
-    
-        # draw the predicted tag position
-        if new_point:
-            min_x = temp_x - 50
-            max_x = temp_x + 50
-            min_y = temp_y - 100
-            max_y = temp_y + 100
-            if min_x < 200:
-                min_x = 200
-            if max_x > 1160:
-                max_x = 1160
-            if min_y < 200:
-                min_y = 200
-            if max_y > 770:
-                max_y = 770   
-            predicted_x = None
-            predicted_y = None
-            min_dis = None
+            r1 = get_distance( tag, anchor1) + random.randint(-err, err)
+            r2 = get_distance( tag, anchor2) + random.randint(-err, err)
+            r3 = get_distance( tag, anchor3) + random.randint(-err, err)
+            r4 = get_distance( tag, anchor4) + random.randint(-err, err)
+
+            # get the raw estimation
+            temp_x = int(get_cirlce_collision(r1, r2, anchor1, anchor2)[0][0])
+            temp_y = int(get_cirlce_collision(r2, r3, anchor2, anchor3)[0][1])
+
+            # define the scope where the point is possibly at
+            min_x = temp_x - 50 if temp_x - 50 > 200 else 200
+            max_x = temp_x + 50 if temp_x + 50 < 1160 else  1160
+            min_y = temp_y - 100 if temp_y - 100 > 200 else 200
+            max_y = temp_y + 100 if temp_y + 100 < 770 else 770
+
+            # calculate the predicted point
+            predicted_x = predicted_y = min_dis = None
             for i in range(min_x, max_x, 10):
                 for j in range(min_y, max_y, 10):
                     temp = (get_distance((i, j), anchor1) - r1)**2 + (get_distance((i, j), anchor2) - r2)**2 + (get_distance((i, j), anchor3) -r3)**2 + (get_distance((i, j), anchor4) - r4)**2
@@ -130,21 +112,25 @@ def main(err = 30, show_debug = False, testing = False):
                         predicted_x = i
                         predicted_y = j
 
-        # draw the predicted point and calculate the distance between it and the actual point
-        draw_dot((predicted_x, predicted_y), gold)
-        d = get_distance((predicted_x, predicted_y), tag)
-        diff.append(d)
-         
-        # show the lines for debug purpose
+        # draw the results, show the lines for debug purpose if needed
         if show_debug:
             draw_line((temp_x, 0), (temp_x, 900), dark_gray)
             draw_line((0, temp_y), (1600,temp_y),  dark_gray)
             draw_circle(anchor1, r1, red)
             draw_circle(anchor2, r2, green)
             draw_circle(anchor3, r3, blue)
-            
+        draw_set_up()
+        draw_dot(tag)
+        draw_dot((temp_x,temp_y), dark_gray)
+        draw_dot((predicted_x, predicted_y), gold)
         pygame.display.flip()
+        
+        
         if testing == True:
+            # draw the predicted point and calculate the distance between it and the actual point
+            d = get_distance((predicted_x, predicted_y), tag)
+            diff.append(d)
+            # reset the tag
             tag = [random.randint(200, 1160), random.randint(200, 770)]
             count += 1
             new_point = True
