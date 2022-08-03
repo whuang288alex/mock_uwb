@@ -87,10 +87,15 @@ def main(err = 30, show_debug = False, testing = False):
 
         # calculate the predicted points
         if new_point:
-            r1 = get_distance( tag, anchor1) + random.randint(-err, err)
-            r2 = get_distance( tag, anchor2) + random.randint(-err, err)
-            r3 = get_distance( tag, anchor3) + random.randint(-err, err)
-            r4 = get_distance( tag, anchor4) + random.randint(-err, err)
+
+            # print(str(get_distance(tag, anchor1)))
+            # print(str(get_distance(tag, anchor2)))
+            # print(str(get_distance(tag, anchor3)))
+
+            r1 = get_distance(tag, anchor1) + random.randint(-err, err)
+            r2 = get_distance(tag, anchor2) + random.randint(-err, err)
+            r3 = get_distance(tag, anchor3) + random.randint(-err, err)
+            r4 = get_distance(tag, anchor4) + random.randint(-err, err)
 
             # get the raw estimation
             temp_x = int(get_cirlce_collision(r1, r2, anchor1, anchor2)[0][0])
