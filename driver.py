@@ -5,7 +5,7 @@ import time
 for i in range(100):
     
     start_time = datetime.datetime.now()
-    diff = mock_uwb.main(err = 25, show_debug = True, testing = True)
+    diff = mock_uwb.main(err = 10, show_debug = True, testing = True)
     end_time = datetime.datetime.now()
     
     print("\nnumber {i} round, average diff across 100 tests: {diff}".format( i = i + 1, diff = diff))

@@ -1,4 +1,3 @@
-from matplotlib.pyplot import draw
 import pygame
 import math
 import statistics
@@ -61,7 +60,7 @@ def draw_set_up():
     draw_line(anchor4, anchor1, black)
     
 # the main loop
-def main(err = 30, show_debug = False, testing = False): 
+def main(err = 10, show_debug = True, testing = False, three_point = True): 
     run = True
     new_point = True
     d1 = d2 = d3 = d4 = r1 = r2 = r3 = r4 = 0
@@ -87,46 +86,56 @@ def main(err = 30, show_debug = False, testing = False):
 
         # calculate the predicted points
         if new_point:
+            
+            if three_point:
+                r1 = get_distance(tag, anchor1) + random.randint(-err, err)
+                r2 = get_distance(tag, anchor2) + random.randint(-err, err)
+                r3 = get_distance(tag, anchor3) + random.randint(-err, err)
+                
+                # get the raw estimation
+                temp_x = int(get_cirlce_collision(r1, r2, anchor1, anchor2)[0][0])
+                temp_y = int(get_cirlce_collision(r2, r3, anchor2, anchor3)[0][1])
 
-            # print(str(get_distance(tag, anchor1)))
-            # print(str(get_distance(tag, anchor2)))
-            # print(str(get_distance(tag, anchor3)))
-
-            r1 = get_distance(tag, anchor1) + random.randint(-err, err)
-            r2 = get_distance(tag, anchor2) + random.randint(-err, err)
-            r3 = get_distance(tag, anchor3) + random.randint(-err, err)
-            r4 = get_distance(tag, anchor4) + random.randint(-err, err)
-
-            # get the raw estimation
-            temp_x = int(get_cirlce_collision(r1, r2, anchor1, anchor2)[0][0])
-            temp_y = int(get_cirlce_collision(r2, r3, anchor2, anchor3)[0][1])
-
-            # define the scope where the point is possibly at
-            min_x = temp_x - 50 if temp_x - 50 > 200 else 200
-            max_x = temp_x + 50 if temp_x + 50 < 1160 else  1160
-            min_y = temp_y - 100 if temp_y - 100 > 200 else 200
-            max_y = temp_y + 100 if temp_y + 100 < 770 else 770
-
-            # calculate the predicted point
-            predicted_x = predicted_y = min_dis = None
-            for i in range(min_x, max_x, 10):
-                for j in range(min_y, max_y, 10):
-                    temp = (get_distance((i, j), anchor1) - r1)**2 + (get_distance((i, j), anchor2) - r2)**2 + (get_distance((i, j), anchor3) -r3)**2 + (get_distance((i, j), anchor4) - r4)**2
-                    if min_dis == None or temp <= min_dis:
-                        min_dis = temp
-                        predicted_x = i
-                        predicted_y = j
-
+                # define the scope where the point is possibly at
+                min_x = temp_x - 50 if temp_x - 50 > 200 else 200
+                max_x = temp_x + 50 if temp_x + 50 < 1160 else  1160
+                min_y = temp_y - 100 if temp_y - 100 > 200 else 200
+                max_y = temp_y + 100 if temp_y + 100 < 770 else 770
+                
+                # calculate the predicted point
+                predicted_x = predicted_y = min_dis = None
+                for i in range(min_x, max_x, 10):
+                    for j in range(min_y, max_y, 10):
+                        temp = (get_distance((i, j), anchor1) - r1)**2 + (get_distance((i, j), anchor2) - r2)**2 + (get_distance((i, j), anchor3) -r3)**2
+                        if min_dis == None or temp <= min_dis:
+                            min_dis = temp
+                            predicted_x = i
+                            predicted_y = j
+                
+            else:
+                r1 = get_distance(tag, anchor1) + random.randint(-err, err)
+                r2 = get_distance(tag, anchor2) + random.randint(-err, err)
+                c1 , c2 = get_cirlce_collision(r1, r2, anchor1, anchor2)
+                if c1[1] > 200:
+                    predicted_x = c1[0]
+                    predicted_y = c1[1]
+                else:
+                    predicted_x = c2[0]
+                    predicted_y = c2[1]
+                    
         # draw the results, show the lines for debug purpose if needed
         if show_debug:
-            draw_line((temp_x, 0), (temp_x, 900), dark_gray)
-            draw_line((0, temp_y), (1600,temp_y),  dark_gray)
+            if three_point:
+                draw_line((temp_x, 0), (temp_x, 900), dark_gray)
+                draw_line((0, temp_y), (1600,temp_y),  dark_gray)
             draw_circle(anchor1, r1, red)
             draw_circle(anchor2, r2, green)
             draw_circle(anchor3, r3, blue)
+        
         draw_set_up()
         draw_dot(tag)
-        draw_dot((temp_x,temp_y), dark_gray)
+        if three_point:
+            draw_dot((temp_x,temp_y), dark_gray)
         draw_dot((predicted_x, predicted_y), gold)
         pygame.display.flip()
         
