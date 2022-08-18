@@ -1,11 +1,13 @@
 # mock_uwb
 
-This project simulates the "three-point fix" method that is widely used to locate a tag's location. 
-In theory, by using measured distances between tags and anchor points, we will get only one possible result.
+This project simulates the "three-point" method that is widely used to locate a tag's location. 
+In theory, by using measured distances between tags and anchor points, we can obtain the location of the tag given that we already knew where the anchor points are.
+Below is an image illustating the concept.
+
 
 ![image](https://user-images.githubusercontent.com/91099638/181723429-83da4c1a-bd42-45ab-8751-2c0dccc3e411.png)
 
-However, in reality, measurment errors might result in three circles having no intersection or many intersections. Therefore, this project aims to solve this problem by finding a best estimated point even if the measured distances results in obscure results.
+However, in reality, measurment errors might result in three circles having no intersection or many intersections. Therefore, this project aims to solve this problem by finding a best estimated point even if the measured distances lead to an obscure result.
 
 ## Set Up
 
